@@ -14,7 +14,7 @@ struct ContentView: View {
         //게임 화면의 크기 설정
         //화면에 꽉차게 설정
         scene.scaleMode = .resizeFill //A setting that defines how the scene is mapped to the view that presents it.
-        scene.backgroundColor = .green
+
         return scene
     }
 
