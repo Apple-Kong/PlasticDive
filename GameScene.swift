@@ -15,13 +15,46 @@ import CoreMotion
 
 class Trash: SKSpriteNode { }
 
+enum CollisionType: UInt32 {
+    case trash = 1
+    case trashCan = 2
+}
+
+enum TrashType: Int, CaseIterable {
+    case PETE = 1
+    case HDPE
+    case PVC
+    case LDPE
+    case PP
+    case PS
+    case OTHER
+    
+    var imageName: String {
+        "trash-\(self.rawValue)"
+    }
+}
+
+enum TrashCanPoint {
+    case topLeft
+    case top
+    case topRight
+    case bottomLeft
+    case bottom
+    case bottomRight
+}
+
+
+
+
+
+
 
 class GameScene: SKScene { //An object that organizes all of the active SpriteKit content.
     
     //MARK: - Properties
     let gameManager = GameManager.shared
     
-    var trashes = ["trash-1", "trash-2", "trash-3", "trash-4", "trash-5", "trash-6"]
+   
     
     
     var motionManager: CMMotionManager?
@@ -45,17 +78,31 @@ class GameScene: SKScene { //An object that organizes all of the active SpriteKi
     
     
     override func update(_ currentTime: TimeInterval) {
+        
+        
         if let accelerometerData = motionManager?.accelerometerData {
             
             // 가로모드에서는 x, y 뒤집어주어야함.
             // 전체 물리공간의 중력을 벡터값으로 수정. 중력의 크기도 바꿀 수 있음.
             physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * -30, dy: accelerometerData.acceleration.x * 30)
         }
+        
+        let activeTrashes = children.compactMap { $0 as? TrashNode}
+        
+        for trash in activeTrashes {
+            guard frame.intersects(trash.frame) else { continue }
+            
+            
+        }
+        
     }
+    
+    
 
     //Tells this object that one or more new touches occurred in a view or window
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
+        print("DEBUG: touchesBegan method called...")
         //첫번째 탭의 위치 알아오기
         //UITouch : An object representing the location, size, movement, and force of a touch occurring on the screen.
         guard let touch = touches.first else { return }
@@ -77,6 +124,7 @@ class GameScene: SKScene { //An object that organizes all of the active SpriteKi
         
         // 외부 프레임에 물리적 테두리 부여를 해야 화면 밖으로 안날라감.
         physicsBody = SKPhysicsBody(edgeLoopFrom: frame.inset(by: UIEdgeInsets(top: 40, left: 0, bottom: 0, right: 0)))
+        physicsWorld.contactDelegate = self
         
         motionManager = CMMotionManager()
         motionManager?.startAccelerometerUpdates()
@@ -96,27 +144,26 @@ class GameScene: SKScene { //An object that organizes all of the active SpriteKi
         
         
         
+        for type in TrashType.allCases {
+            
+            
+            
+        }
         // add trash can on scene
-        let trashCan = makeTrashCanAt(point: CGPoint(x: frame.maxX - 100, y: frame.minY + 100), withName: "trashCan1")
+        let trashCan = TrashCanNode(type: TrashType.PETE, point: CGPoint(x: frame.minX + 100, y: frame.minY + 100))
         self.addChild(trashCan)
         
-        let trashCan2 = makeTrashCanAt(point: CGPoint(x: frame.minX + 100, y: frame.minY + 100), withName: "trashCan1")
+        let trashCan2 = TrashCanNode(type: TrashType.HDPE, point: CGPoint(x: frame.minX + 100, y: frame.maxY - 100))
         self.addChild(trashCan2)
         
-        let trashCan3 = makeTrashCanAt(point: CGPoint(x: frame.maxX - 100, y: frame.maxY - 100), withName: "trashCan1")
+        let trashCan3 = TrashCanNode(type: TrashType.PVC, point: CGPoint(x: frame.maxX - 100, y: frame.maxY - 100))
         self.addChild(trashCan3)
         
-        let trashCan4 = makeTrashCanAt(point: CGPoint(x: frame.minX + 100, y: frame.maxY + 100), withName: "trashCan1")
+        let trashCan4 = TrashCanNode(type: TrashType.LDPE, point: CGPoint(x: frame.maxX - 100, y: frame.minY + 100))
         self.addChild(trashCan4)
         
         
-        
-        
-        let trash = SKSpriteNode(imageNamed: "ballBlue")
-        let trashRadius = trash.frame.width / 5.0
-        
-        
-        
+
         //게임시작
         gameManager.startGame()
         
@@ -127,40 +174,36 @@ class GameScene: SKScene { //An object that organizes all of the active SpriteKi
                 self.gameManager.increaseTrashCount()
                 
                 
-                let trashType = self.trashes.randomElement()!
-                let trash = Trash(imageNamed: trashType)
-                
-                
+                let trashType = [1, 2, 3, 4, 5, 6].randomElement()!
+                let trash = TrashNode(type: TrashType(rawValue: trashType)!)
                 trash.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
-                trash.name = trashType
                 self.addChild(trash)
-                
-                trash.physicsBody = SKPhysicsBody(circleOfRadius: trashRadius)
-                trash.physicsBody?.allowsRotation = true
-                trash.physicsBody?.restitution = 0.5
-                trash.physicsBody?.friction = 0.1
-                
-                
             }
         })
     }
     
     
     //MARK: - Helpers
-    
-    func makeTrashCanAt(point: CGPoint, withName name: String) -> SKSpriteNode {
-        let trashCan = SKSpriteNode(imageNamed: "trashCan")
-        trashCan.size = CGSize(width: 100, height: 100)
-        trashCan.position = point
-        trashCan.name = name
-        trashCan.physicsBody = SKPhysicsBody(circleOfRadius: trashCan.frame.width / 2.0)
-        trashCan.physicsBody?.allowsRotation = false
-        trashCan.physicsBody?.restitution = 0
-        trashCan.physicsBody?.friction = 0
-        trashCan.physicsBody?.affectedByGravity = false
-        trashCan.physicsBody?.mass = 1000000
-        
-        return trashCan
-    }
 
+}
+
+
+
+
+
+//MARK: - SKPhysicsContactDelegate node 간 접촉 event handler
+extension GameScene: SKPhysicsContactDelegate {
+    func didBegin(_ contact: SKPhysicsContact) {
+        //접촉이 시작되었을 때 해당 메서드 실행됨
+        
+        guard let nodeA = contact.bodyA.node else { return }
+        guard let nodeB = contact.bodyB.node else { return }
+        
+        let sortedNodes = [nodeA, nodeB].sorted { $0.name ?? "" < $1.name ?? ""}
+        let firstNode = sortedNodes[0]
+        let secondNode = sortedNodes[1]
+        
+        print("DEBUG: contact between \(firstNode.name) and \(secondNode.name)")
+        
+    }
 }
