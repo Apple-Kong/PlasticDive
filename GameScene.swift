@@ -136,10 +136,10 @@ class GameScene: SKScene { //An object that organizes all of the active SpriteKi
         addChild(background)
         
         scoreLabel.fontSize = 40
-        scoreLabel.position = CGPoint(x: 20, y: 20)
+        scoreLabel.position = CGPoint(x: frame.midX, y: frame.midY + 100)
         scoreLabel.text = "SCORE: 0"
         scoreLabel.zPosition = 100
-        scoreLabel.horizontalAlignmentMode = .left
+        scoreLabel.horizontalAlignmentMode = .center
         addChild(scoreLabel)
         
         
@@ -203,7 +203,19 @@ extension GameScene: SKPhysicsContactDelegate {
         let firstNode = sortedNodes[0]
         let secondNode = sortedNodes[1]
         
-        print("DEBUG: contact between \(firstNode.name) and \(secondNode.name)")
-        
+//        print("DEBUG: contact between \(firstNode.name) and \(secondNode.name)")
+        if let trashName = firstNode.name, let canName = secondNode.name {
+            
+            if trashName.suffix(1) == canName.suffix(1) {
+                print("DEBUG: Goal \(trashName) -  \(canName)")
+                self.score += 100
+            } else {
+                print("DEBUG: Fail")
+            }
+            
+            
+            // 접촉시 제거
+            firstNode.removeFromParent()
+        }
     }
 }
