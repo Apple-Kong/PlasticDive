@@ -11,44 +11,6 @@ import CoreMotion
 
 
 
-
-
-class Trash: SKSpriteNode { }
-
-enum CollisionType: UInt32 {
-    case trash = 1
-    case trashCan = 2
-}
-
-enum TrashType: Int, CaseIterable {
-    case PETE = 1
-    case HDPE
-    case PVC
-    case LDPE
-    case PP
-    case PS
-    case OTHER
-    
-    var imageName: String {
-        "trash-\(self.rawValue)"
-    }
-}
-
-enum TrashCanPoint {
-    case topLeft
-    case top
-    case topRight
-    case bottomLeft
-    case bottom
-    case bottomRight
-}
-
-
-
-
-
-
-
 class GameScene: SKScene { //An object that organizes all of the active SpriteKit content.
     
     //MARK: - Properties
@@ -58,7 +20,8 @@ class GameScene: SKScene { //An object that organizes all of the active SpriteKi
     
     
     var motionManager: CMMotionManager?
-    let scoreLabel = SKLabelNode(fontNamed:  "HelveticaNeue-Thin")
+    let scoreLabel = SKLabelNode(fontNamed:  "HelveticaNeue")
+    
     var matchedBalls = Set<Trash>()
     var timer = Timer()
     
@@ -69,7 +32,7 @@ class GameScene: SKScene { //An object that organizes all of the active SpriteKi
         didSet {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
-            let formattedScore = formatter.string(from: score as NSNumber) ?? "0"
+            let formattedScore = formatter.string(from: gameManager.score as NSNumber) ?? "0"
             scoreLabel.text = "SCORE: \(formattedScore)"
         }
     }
@@ -81,20 +44,10 @@ class GameScene: SKScene { //An object that organizes all of the active SpriteKi
         
         
         if let accelerometerData = motionManager?.accelerometerData {
-            
             // 가로모드에서는 x, y 뒤집어주어야함.
             // 전체 물리공간의 중력을 벡터값으로 수정. 중력의 크기도 바꿀 수 있음.
-            physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * -30, dy: accelerometerData.acceleration.x * 30)
+            physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.x * 30, dy: accelerometerData.acceleration.y * 20 - 5)
         }
-        
-        let activeTrashes = children.compactMap { $0 as? TrashNode}
-        
-        for trash in activeTrashes {
-            guard frame.intersects(trash.frame) else { continue }
-            
-            
-        }
-        
     }
     
     
@@ -105,65 +58,59 @@ class GameScene: SKScene { //An object that organizes all of the active SpriteKi
         print("DEBUG: touchesBegan method called...")
         //첫번째 탭의 위치 알아오기
         //UITouch : An object representing the location, size, movement, and force of a touch occurring on the screen.
-        guard let touch = touches.first else { return }
-        let location = touch.location(in: self)
+//        guard let touch = touches.first else { return }
+//        let location = touch.location(in: self)
         
-        //SKSpriteNode is an onscreen graphical element
-        let box = SKSpriteNode(color: SKColor.red, size: CGSize(width: 50, height: 50))
-        box.position = location
-        //물리적 크기 설정
-        box.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
-        
-        
-        //게임씬에 추가.
-        addChild(box)
+
     }
     
     //Tells you when the scene is presented by a view.
     override func didMove(to view: SKView) {
         
         // 외부 프레임에 물리적 테두리 부여를 해야 화면 밖으로 안날라감.
-        physicsBody = SKPhysicsBody(edgeLoopFrom: frame.inset(by: UIEdgeInsets(top: 40, left: 0, bottom: 0, right: 0)))
+        physicsBody = SKPhysicsBody(edgeLoopFrom: frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: -100, right: 0)))
         physicsWorld.contactDelegate = self
         
         motionManager = CMMotionManager()
         motionManager?.startAccelerometerUpdates()
         
-        let background = SKSpriteNode(imageNamed: "background")
-        background.position = CGPoint(x: frame.midX, y: frame.midY)
-        background.alpha = 0.2
-        background.zPosition = -1
-        addChild(background)
+//        let background = SKSpriteNode(imageNamed: "background")
+        backgroundColor = .white
+//        background.position = CGPoint(x: frame.midX, y: frame.midY)
+//        background.alpha = 0.2
+//        background.zPosition = -1
+//        addChild(background)
         
-        scoreLabel.fontSize = 40
-        scoreLabel.position = CGPoint(x: frame.midX, y: frame.midY + 100)
+        scoreLabel.fontSize = 28
+        scoreLabel.position = CGPoint(x: frame.maxX - 100, y: frame.maxY - 50)
         scoreLabel.text = "SCORE: 0"
         scoreLabel.zPosition = 100
         scoreLabel.horizontalAlignmentMode = .center
+        scoreLabel.fontColor = .black
+        
         addChild(scoreLabel)
         
+        let logoNode = SKSpriteNode(imageNamed: "Logo")
+        logoNode.size = CGSize(width: 600, height: 400)
+        logoNode.position = CGPoint(x: frame.midX, y: frame.maxY - 200)
+        logoNode.zPosition = -100
         
         
-        for type in TrashType.allCases {
-            
-            
-            
-        }
-        // add trash can on scene
-        let trashCan = TrashCanNode(type: TrashType.PETE, point: CGPoint(x: frame.minX + 100, y: frame.minY + 100))
-        self.addChild(trashCan)
+        self.addChild(logoNode)
         
-        let trashCan2 = TrashCanNode(type: TrashType.HDPE, point: CGPoint(x: frame.minX + 100, y: frame.maxY - 100))
+        
+        
+        let trashCan2 = TrashCanNode(type: TrashType.HDPE, point: CGPoint(x: frame.minX + 100, y: frame.minY + 100))
         self.addChild(trashCan2)
         
-        let trashCan3 = TrashCanNode(type: TrashType.PVC, point: CGPoint(x: frame.maxX - 100, y: frame.maxY - 100))
+        let trashCan3 = TrashCanNode(type: TrashType.PVC, point: CGPoint(x: frame.maxX - 100, y: frame.minY + 100))
         self.addChild(trashCan3)
         
-        let trashCan4 = TrashCanNode(type: TrashType.LDPE, point: CGPoint(x: frame.maxX - 100, y: frame.minY + 100))
-        self.addChild(trashCan4)
+//        let obstacle1 = ObstacleNode(point: CGPoint(x: frame.midX, y: frame.midY))
+//        self.addChild(obstacle1)
         
         
-
+        
         //게임시작
         gameManager.startGame()
         
@@ -176,15 +123,11 @@ class GameScene: SKScene { //An object that organizes all of the active SpriteKi
                 
                 let trashType = [1, 2, 3, 4, 5, 6].randomElement()!
                 let trash = TrashNode(type: TrashType(rawValue: trashType)!)
-                trash.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
+                trash.position = CGPoint(x: self.frame.midX, y: self.frame.maxY)
                 self.addChild(trash)
             }
         })
     }
-    
-    
-    //MARK: - Helpers
-
 }
 
 
@@ -209,13 +152,26 @@ extension GameScene: SKPhysicsContactDelegate {
             if trashName.suffix(1) == canName.suffix(1) {
                 print("DEBUG: Goal \(trashName) -  \(canName)")
                 self.score += 100
+                gameManager.score += 100
             } else {
                 print("DEBUG: Fail")
+                
+//                gameManager.incorrectTrash()
             }
             
-            
+            if let particle = SKEmitterNode(fileNamed: "TrashParticle") {
+                print("DEBUG: particle added")
+                particle.position = firstNode.position
+                addChild(particle)
+                
+                let removeAfterDead = SKAction.sequence([SKAction.wait(forDuration: 3), SKAction.removeFromParent()])
+                
+                particle.run(removeAfterDead)
+            }
             // 접촉시 제거
             firstNode.removeFromParent()
+            
+            
         }
     }
 }

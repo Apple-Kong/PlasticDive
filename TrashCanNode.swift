@@ -37,3 +37,33 @@ class TrashCanNode: SKSpriteNode {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+
+class ObstacleNode: SKSpriteNode {
+    
+    
+    init(point: CGPoint) {
+    
+        
+        
+        let texture = SKTexture(imageNamed: "trashCan")
+        
+        super.init(texture: texture, color: .white, size: texture.size())
+        self.position = point
+        self.size = CGSize(width: 100, height: 100)
+        self.name = "obstacle"
+        self.physicsBody = SKPhysicsBody(circleOfRadius: self.frame.width / 2.0)
+        
+        self.physicsBody?.allowsRotation = false
+        self.physicsBody?.restitution = 0
+        self.physicsBody?.friction = 0
+        self.physicsBody?.affectedByGravity = false
+        self.physicsBody?.mass = 1000000
+        self.physicsBody?.categoryBitMask = CollisionType.obstacle.rawValue
+        self.physicsBody?.collisionBitMask = CollisionType.trash.rawValue
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}

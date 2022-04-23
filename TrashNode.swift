@@ -8,6 +8,36 @@
 import Foundation
 import SpriteKit
 
+class Trash: SKSpriteNode { }
+
+enum CollisionType: UInt32 {
+    case trash = 1
+    case trashCan = 2
+    case obstacle = 4
+}
+
+enum TrashType: Int, CaseIterable {
+    case PETE = 1
+    case HDPE
+    case PVC
+    case LDPE
+    case PP
+    case PS
+    case OTHER
+    
+    var imageName: String {
+        "trash-\(self.rawValue)"
+    }
+}
+
+enum TrashCanPoint {
+    case topLeft
+    case top
+    case topRight
+    case bottomLeft
+    case bottom
+    case bottomRight
+}
 
 class TrashNode: SKSpriteNode {
     var type: TrashType
@@ -16,17 +46,23 @@ class TrashNode: SKSpriteNode {
         self.type = type
         
         let texture = SKTexture(imageNamed: type.imageName)
-        super.init(texture: texture, color: .white, size: texture.size())
+        let textureSize = texture.size()
+        
+        super.init(texture: texture, color: .white, size: textureSize)
+        
+        size.width = size.width / 2.0
+        size.height = size.height / 2.0
         
         name = "trash-\(type.rawValue)"
         
-        physicsBody = SKPhysicsBody(texture: texture, size: texture.size())
+        
+        physicsBody = SKPhysicsBody(texture: texture, size: size)
         physicsBody?.allowsRotation = true
         physicsBody?.restitution = 0.5
         physicsBody?.friction = 0.1
 
         physicsBody?.categoryBitMask = CollisionType.trash.rawValue
-        physicsBody?.collisionBitMask = CollisionType.trash.rawValue | CollisionType.trashCan.rawValue
+        physicsBody?.collisionBitMask = CollisionType.trash.rawValue | CollisionType.trashCan.rawValue | CollisionType.obstacle.rawValue
         physicsBody?.contactTestBitMask = CollisionType.trashCan.rawValue
     }
     

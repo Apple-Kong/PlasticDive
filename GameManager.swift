@@ -7,16 +7,25 @@
 
 import Foundation
 
+protocol GUIDelegate {
+    func nextLevel()
+    func gameOver()
+}
+
 class GameManager {
     static let shared = GameManager()
     
+    var delegate: GUIDelegate?
+    
+//    @Binding var isShowGameOver: Bool
     
     private init() { }
     
     private var currentLevel: Int = 1
     var nowPlaying: Bool = false
     private var trashCount: Int = 0
-    private var heart: Int = 3
+    var heart: Int = 3
+    var score: Int = 0
     
     
     
@@ -29,12 +38,24 @@ class GameManager {
     }
     
     var numOfTrash: Int {
-        return 7 + currentLevel * 3
+        return 20 + currentLevel * 3
+    }
+    
+    func correctTrash() {
+        score += 100
+    }
+    
+    func incorrectTrash() {
+        self.heart -= 1
+        if heart < 0 {
+            self.endGame()
+        }
     }
     
     func startGame() {
+        print("DEBUG: GameManger starts game...")
         self.nowPlaying = true
-        trashCount = 0
+        
     }
     
     func increaseTrashCount() {
@@ -47,7 +68,16 @@ class GameManager {
     
     
     func endGame() {
+        print("DEBUG: GameManger ends game...")
+        
         self.nowPlaying = false
+        refreash()
+        delegate?.gameOver()
+    }
+    
+    func refreash() {
         trashCount = 0
+        heart = 3
+        score = 0
     }
 }

@@ -5,8 +5,20 @@ import CoreMotion
 
 // A sample SwiftUI creating a GameScene and sizing it
 // at 300x400 points
-struct ContentView: View {
+struct ContentView: View, GUIDelegate {
+
+//    @EnvironmentObject var gameStateManager: GameStateManager
     
+    @Binding var isOver: Bool
+    
+    let gameManager: GameManager?
+    
+    init(isOver: Binding<Bool>) {
+        self._isOver = isOver
+        gameManager = GameManager.shared
+        gameManager?.delegate = self
+    }
+   
     
     var scene: SKScene {
         
@@ -23,93 +35,75 @@ struct ContentView: View {
         
         ZStack {
             SpriteView(scene: scene)
-            TrashDescriptionView()
-//            GameOverView()
+                .zIndex(1)
+            
+            if isOver {
+                GameOverView(isOver: $isOver)
+                        .frame(width: 300, height: 400)
+                        .transition(.scale)
+                        .zIndex(2)
+                        .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 0)
+            }
+            
+//            
+//            TabView {
+////                FirstSlideView()
+//                
+////                FirstSlideView()
+//                SecondDescriptionView()
+//                TrashDescriptionView()
+//                    
+//            }
+//            .tabViewStyle(.page)
+//            .background(.gray)
+//            .cornerRadius(20)
+//            .frame(width: 400, height: 450)
+//            .transition(.scale)
+//            .zIndex(2)
+//            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 0)
+            
+            
         }
         .ignoresSafeArea()
+
     }
-}
-
-
-struct TrashDescriptionView: View {
     
-    var body: some View {
-        
-        VStack {
-            
-            HStack {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 100, height: 100)
-                
-                VStack(alignment: .leading) {
-                    Text("PET")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        
-                    Text("#Reusable #useOneTime")
-                        .foregroundColor(.gray)
-                        
-                    
-                }
-                .frame(height: 100)
-                .padding(.leading, 4)
-                
-                Spacer()
-            }
-            .padding()
-       
-            
-            Text("PET plastic is easy to recycle. Thus it is accepted at most recycling plants. The plastic items are shredded into tiny pallets and reprocessed into new bottles. Recycled PET bottles can also be turned into polyester fiber. This fabric is applied for producing fleece clothes and carpets or to stuff sleeping bags, jackets, pillows.")
-                .multilineTextAlignment(.leading)
-                .lineLimit(4)
-                .padding()
-                
-            
-            Spacer()
-            
-            HStack {
-                Button {
-                    print("Home")
-                } label: {
-                    ZStack {
-                        
-                    }
-                    .frame(width: 150, height: 50)
-                    .background(.blue)
-                    .cornerRadius(10)
-                }
-                .padding(20)
-                
-                
-                
-                Button {
-                    print("Home")
-                } label: {
-                    ZStack {
-                        
-                    }
-                    .frame(width: 150, height: 50)
-                    .background(.blue)
-                    .cornerRadius(10)
-                }
-                .padding(20)
-                
-
-            }
+    //MARK: - Delegate
+    
+    func nextLevel() {
+        print("DEBUG: nextLevel")
+    }
+    
+    func gameOver() {
+        withAnimation {
+//            self.gameStateManager.state = .over
+            self.isOver = true
         }
-        .frame(width: 400, height: 300)
-        .background(.white)
-        .cornerRadius(20)
-        
-        
-        
+        print("DEBUG: gameOver delegates \(isOver)")
     }
 }
+
+
+
+
+struct SlideInfo {
+    let title: String
+    let images: [String]
+    let description: String
+}
+
+
+
+
 
 
 struct GameOverView: View {
     
     var score: Int = 0
+    
+    @Binding var isOver: Bool
+    
+    let gameManager = GameManager.shared
     
     var body: some View {
         
@@ -142,9 +136,21 @@ struct GameOverView: View {
                 
                 Button {
                     print("Home")
+                    
+                    withAnimation {
+                        isOver = false
+                    }
+                    
+                    gameManager.startGame()
+                    
+                    
+                    
                 } label: {
                     ZStack {
-                        
+                        Text("Try again")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
                     }
                     .frame(width: 150, height: 50)
                     .background(.blue)
