@@ -216,7 +216,7 @@ struct LastTextView: View {
 
 struct GameOverView: View {
     
-    var score: Int = 0
+    
     
     @Binding var isOver: Bool
     
@@ -231,36 +231,19 @@ struct GameOverView: View {
                 .padding(.top, 40)
                 .padding(.bottom, 20)
             
-            Text("Score: \(gameManager.score)")
+            Text("Score: \(gameManager.historyScore)")
                 .font(.title3)
             
             Spacer()
             
             HStack {
                 Button {
-                    print("Home")
-                } label: {
-                    ZStack {
-                        
-                    }
-                    .frame(width: 150, height: 50)
-                    .background(.blue)
-                    .cornerRadius(10)
-                }
-                .padding(20)
-                
-                
-                
-                Button {
-                    print("Try Again")
-                    
                     withAnimation {
                         isOver = false
                     }
                     gameManager.resetGame()
                     gameManager.startGame()
-                    
-                    
+
                     
                 } label: {
                     ZStack {
@@ -268,8 +251,10 @@ struct GameOverView: View {
                             .font(.title3)
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
+                            
                     }
-                    .frame(width: 150, height: 50)
+                    .frame(width: 200,height: 50)
+                    
                     .background(.blue)
                     .cornerRadius(10)
                 }

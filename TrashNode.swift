@@ -28,19 +28,19 @@ enum TrashType: Int, CaseIterable {
     var name: String {
         switch self {
         case .PETE:
-            return "PETE"
+            return "1:PETE"
         case .HDPE:
-            return "HDPE"
+            return "2:HDPE"
         case .PVC:
-            return "PVC"
+            return "3:PVC"
         case .LDPE:
-            return "LDPE"
+            return "4:LDPE"
         case .PP:
-            return "PP"
+            return "5:PP"
         case .PS:
-            return "PS"
+            return "6:PS"
         case .OTHER:
-            return "OTHER"
+            return "7:OTHER"
         }
     }
     
@@ -59,7 +59,7 @@ enum TrashType: Int, CaseIterable {
     
     var isMicrowave: Bool {
         switch self {
-        case .HDPE, .PP:
+        case .PETE, .HDPE, .LDPE, .PP:
             return true
         default:
             return false
@@ -69,19 +69,19 @@ enum TrashType: Int, CaseIterable {
     var description: String {
         switch self {
         case .PETE:
-            return "PET 1 plastic is used in much disposable food and drink containers so we interfere with it quite often. Therefore it is crucial to understand a few things: PET plastic is rather safe for food and drinks packaging. You can only use PETE plastic one time. It has got a porous structure so you need strong cleaning products. These products will cause carcinogens leach. Never heat PETE 1 plastic as this causes antimony leach which is a toxic chemical."
+            return "It's transparent and light. It is the most recycled and very safe to read. There is a high possibility of bacteria reproducing when reused (water bottles, juice/ion drink bottles)"
         case .HDPE:
-            return "HDPE"
+            return "It has no chemical emissions and is very safe for toxicity. Microwave is available (milk bottles, toys)"
         case .PVC:
-            return "PVC"
+            return "Usually, it is weak against stable substances or heat, so it releases toxic gases, environmental hormones, and dioxins when incinerated. "
         case .LDPE:
-            return "LDPE"
+            return "It is less rigid and transparent than HDPE. It is recommended to refrain from using it as much as possible because it is safe to use in everyday life but cannot be recycled. (Plastic bags, snack wrappers)"
         case .PP:
-            return "PP"
+            return "It is the lightest and most durable plastic. There is no deformation or hormonal emission at high temperatures. Polypropylene recycling is expensive and, in many cases, it’s hard to get rid of the smell of the product this plastic contained in its first life. (Airtight container, lunch box, cup)"
         case .PS:
-            return "PS"
+            return "Although molding is easy, heat resistance is weak, so environmental hormones and carcinogens are released when heated. (Disposable cups, disposable forks, spoons, take-out coffee lids)"
         case .OTHER:
-            return "OTHER"
+            return "All other plastics are not recommended for use"
         }
     }
 }

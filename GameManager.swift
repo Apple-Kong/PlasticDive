@@ -18,6 +18,8 @@ class GameManager {
     var uiDelegate: UIDelegate?
     var guiDelegate: GUIDelegate?
     
+
+    
     
 //    @Binding var isShowGameOver: Bool
     
@@ -27,7 +29,7 @@ class GameManager {
     var nowPlaying: Bool = false
     private var trashCount: Int = 0
     var score: Int = 0
-    
+    var historyScore: Int = 0
     var isFever: Bool = false
     
     
@@ -101,6 +103,7 @@ class GameManager {
     
     func resetGame() {
         currentLevel = 1
+        historyScore = score
         score = 0
         guiDelegate?.resetGUI()
         self.refreash()

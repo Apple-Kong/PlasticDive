@@ -94,7 +94,7 @@ struct TrashDescriptionView: View {
 
 struct SecondDescriptionView: View {
     
-    var slideInfo: SlideInfo = SlideInfo(title: "Recycle", images: ["trash-2", "trash-5"], description: "types one and two are used in products like water bottles peanut butter jars shampoo bottles, gallon jugs and alot of other things that are parts of our everyday lives")
+    var slideInfo: SlideInfo = SlideInfo(title: "Recycle", images: ["trash-1", "trash-2","trash-4", "trash-5"], description: "types one and two are used in products like water bottles peanut butter jars shampoo bottles, gallon jugs and alot of other things that are parts of our everyday lives")
     
     var body: some View {
         
@@ -102,20 +102,21 @@ struct SecondDescriptionView: View {
             
             VStack(alignment: .leading) {
                 HStack {
-                    Text("Description")
+                    Text("Next Stage...")
                         .font(.largeTitle)
                         .fontWeight(.bold)
+                        .padding(.top, 40)
 //                    Spacer()
                 }
             
                 
-                HStack(spacing: 20) {
+                HStack(spacing: 10) {
                     
                     ForEach(0..<slideInfo.images.count) { index in
                         Image(slideInfo.images[index])
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 100, height: 100)
+                            .frame(width: 80, height: 80)
                             .cornerRadius(10)
                             .shadow(color: .black.opacity(0.4), radius: 10)
                         
@@ -124,13 +125,11 @@ struct SecondDescriptionView: View {
                     
                 }
             }
-            .padding(.leading, 30)
-            .padding(.top, 40)
-            
             
             Image("arrow")
                 .resizable()
-                .frame(width: 120, height: 150)
+                .aspectRatio(contentMode: .fit)
+                
 
             
             Image("microwave")
@@ -163,8 +162,8 @@ struct MoreInfoView: View {
                 ItemInfoView(type: .HDPE)
                 ItemInfoView(type: .PVC)
                 ItemInfoView(type: .LDPE)
-                ItemInfoView(type: .PS)
                 ItemInfoView(type: .PP)
+                ItemInfoView(type: .PS)
                 
             }
             
@@ -186,10 +185,12 @@ struct ItemInfoView: View {
                 Text("\(type.name)")
                     .font(.title)
                     .fontWeight(.bold)
+                    
             }
             
-            Text("nakefak nfwe nwjkafnwakjfn wakfn wkafwek fwaekfwaef wwa fnewa fwaejkf waeafn af wakjlfnwaek fnlwaf wa fwnajkfnla fnjkawfjkawl ")
+            Text(type.description)
                 .frame(alignment: .leading)
+                .padding(.vertical,10)
         }
     }
 }

@@ -90,13 +90,14 @@ class GameScene: SKScene, GUIDelegate { //An object that organizes all of the ac
         
         switch gameManager.currentLevel {
         case 1:
-            self.microwave.texture = SKTexture(imageNamed: "no-bluebin")
-            self.microwave.type = .no_bluebin
             self.bluebin.texture = SKTexture(imageNamed: "bluebin")
             self.bluebin.type = .bluebin
+            self.microwave.texture = SKTexture(imageNamed: "no-bluebin")
+            self.microwave.type = .no_bluebin
+
         case 2:
             self.bluebin.texture = SKTexture(imageNamed: "microwave")
-            self.bluebin.type = CanType.bluebin
+            self.bluebin.type = .microwave
             self.microwave.texture = SKTexture(imageNamed: "no-microwave")
             self.microwave.type = .no_microwave
         default:
@@ -168,11 +169,12 @@ class GameScene: SKScene, GUIDelegate { //An object that organizes all of the ac
         self.addChild(bluebin)
         self.addChild(microwave)
         
-        let belt1 = ConveyorBeltNode(point: CGPoint(x: frame.midX + 120, y: frame.midY + 100))
+        let belt1 = ConveyorBeltNode(point: CGPoint(x: frame.midX + 120, y: frame.midY + 80))
         self.addChild(belt1)
         
-        let belt2 = ConveyorBeltNode(point: CGPoint(x: frame.midX - 120, y: frame.midY - 100))
+        let belt2 = ConveyorBeltNode(point: CGPoint(x: frame.midX - 90, y: frame.midY - 130))
         self.addChild(belt2)
+        
         
         
         
@@ -252,7 +254,6 @@ extension GameScene: SKPhysicsContactDelegate {
                         firstNode.run(removeAnimation)
                     } else {
                        
-                        
                         firstNode.physicsBody = nil
                         run(wrongSound)
                         let removeAnimation = SKAction.sequence([SKAction.applyImpulse(CGVector(dx: 0, dy: 10), duration: 0.1), SKAction.fadeOut(withDuration: 0.2), SKAction.removeFromParent()])
@@ -268,8 +269,6 @@ extension GameScene: SKPhysicsContactDelegate {
                         let removeAnimation = SKAction.sequence([SKAction.resize(toWidth: 0, height: 0, duration: 0.3), SKAction.removeFromParent()])
                         firstNode.run(removeAnimation)
                     } else  {
-                     
-                        
                         firstNode.physicsBody = nil
                         run(wrongSound)
                         let removeAnimation = SKAction.sequence([SKAction.applyImpulse(CGVector(dx: 0, dy: 10), duration: 0.1), SKAction.fadeOut(withDuration: 0.2), SKAction.removeFromParent()])
