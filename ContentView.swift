@@ -5,18 +5,22 @@ import CoreMotion
 
 // A sample SwiftUI creating a GameScene and sizing it
 // at 300x400 points
-struct ContentView: View, GUIDelegate {
+struct ContentView: View, UIDelegate {
 
 //    @EnvironmentObject var gameStateManager: GameStateManager
     
     @Binding var isOver: Bool
+    @State var isStartViewShown: Bool = true
+    @Binding var isGoingToNextLevel: Bool
     
     let gameManager: GameManager?
     
-    init(isOver: Binding<Bool>) {
+    init(isOver: Binding<Bool>, isGoing: Binding<Bool>) {
         self._isOver = isOver
+        self._isGoingToNextLevel = isGoing
+      
         gameManager = GameManager.shared
-        gameManager?.delegate = self
+        gameManager?.uiDelegate = self
     }
    
     
@@ -37,41 +41,98 @@ struct ContentView: View, GUIDelegate {
             SpriteView(scene: scene)
                 .zIndex(1)
             
-            if isOver {
-                GameOverView(isOver: $isOver)
-                        .frame(width: 300, height: 400)
-                        .transition(.scale)
-                        .zIndex(2)
-                        .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 0)
+            
+            if isStartViewShown {
+                TabView {
+    //                FirstSlideView()
+                    
+//                    MoreInfoView()
+                    
+                    FirstSlideView()
+                        .foregroundColor(.black)
+                    
+                    TrashDescriptionView()
+                    
+                    GameStartButtonView(isShown: $isStartViewShown)
+
+                }
+                .tabViewStyle(.page)
+                .background(.white)
+                .cornerRadius(20)
+                .frame(width: 400, height: 450)
+                .transition(.scale)
+                .zIndex(2)
+                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 0)
+            }
+
+            
+            
+            if isGoingToNextLevel {
+                TabView {
+
+                    CongratView()
+                        .foregroundColor(.black)
+                    
+                    SecondDescriptionView()
+                    
+                    GameStartButtonView(isShown: $isGoingToNextLevel)
+
+                }
+                .tabViewStyle(.page)
+                .background(.white)
+                .cornerRadius(20)
+                .frame(width: 400, height: 450)
+                .transition(.scale)
+                .zIndex(2)
+                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 0)
             }
             
-//            
-//            TabView {
-////                FirstSlideView()
-//                
-////                FirstSlideView()
-//                SecondDescriptionView()
-//                TrashDescriptionView()
-//                    
-//            }
-//            .tabViewStyle(.page)
-//            .background(.gray)
-//            .cornerRadius(20)
-//            .frame(width: 400, height: 450)
-//            .transition(.scale)
-//            .zIndex(2)
-//            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 0)
+
             
-            
+            if isOver {
+                
+                TabView {
+                    
+                    ForEach(messages) { item in
+                        LastTextView(text: item.text)
+                            .padding(20)
+                    }
+
+                    LastSlideView()
+                        .foregroundColor(.black)
+                        .padding(20)
+                    
+                    MoreInfoView()
+                        .foregroundColor(.black)
+                        .padding(20)
+                    
+                    GameOverView(isOver: $isOver)
+                            .zIndex(2)
+                        
+
+                }
+                .tabViewStyle(.page)
+                .background(.white)
+                .cornerRadius(20)
+                .frame(width: 500, height: 600)
+                .transition(.scale)
+                .zIndex(2)
+                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 0)
+                .transition(.scale)
+               
+            }
         }
         .ignoresSafeArea()
-
     }
     
     //MARK: - Delegate
     
-    func nextLevel() {
-        print("DEBUG: nextLevel")
+    func nextLevel(level: Int) {
+        print("DEBUG: nextLevel \(level)")
+        
+        if level == 2 {
+            self.isGoingToNextLevel = true
+        }
     }
     
     func gameOver() {
@@ -94,6 +155,62 @@ struct SlideInfo {
 
 
 
+struct GameStartButtonView: View {
+    
+    let gameManager = GameManager.shared
+    
+    @Binding var isShown: Bool
+    
+    var body: some View {
+        
+        VStack {
+            Button {
+                print("DEBUG: Start Game")
+                isShown = false
+                gameManager.startGame()
+                    
+            } label: {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 20)
+                        .frame(width: 300, height: 70)
+                    
+                    Text("Game Start")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                }
+            }
+        }
+    }
+}
+
+struct Message: Identifiable {
+    var id: Int
+    let text: String
+    
+}
+
+let messages: [Message] = [
+    Message(id: 0, text: "Did you enjoy the game?"),
+    Message(id: 1, text: "You have now learned which plastics are well recycled. So you can make more environmentally friendly choices when you buy plastic products."),
+    Message(id: 2, text: "In addition, you know which plastic you shouldn't put in the microwave. So now, You're able to protect your health"),
+    Message(id: 3, text: "The numbers on these cute friends' bodies are actually..."),
+    Message(id: 4, text: "Indicates the ISO specification plastic type.")
+]
+
+
+struct LastTextView: View {
+    let text: String
+    
+    
+    var body: some View {
+        VStack {
+            Text(text)
+                .font(.title3)
+                .multilineTextAlignment(.center)
+        }
+    }
+}
 
 
 
@@ -114,7 +231,7 @@ struct GameOverView: View {
                 .padding(.top, 40)
                 .padding(.bottom, 20)
             
-            Text("Score: 1200")
+            Text("Score: \(gameManager.score)")
                 .font(.title3)
             
             Spacer()
@@ -135,12 +252,12 @@ struct GameOverView: View {
                 
                 
                 Button {
-                    print("Home")
+                    print("Try Again")
                     
                     withAnimation {
                         isOver = false
                     }
-                    
+                    gameManager.resetGame()
                     gameManager.startGame()
                     
                     

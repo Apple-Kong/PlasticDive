@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "no-microwave.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

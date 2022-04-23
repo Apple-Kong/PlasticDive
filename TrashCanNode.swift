@@ -9,23 +9,34 @@ import Foundation
 import SpriteKit
 
 
+enum CanType {
+    case bluebin
+    case microwave
+    case no_bluebin
+    case no_microwave
+}
+
+
 class TrashCanNode: SKSpriteNode {
-    var type: TrashType
+    var type: CanType
     
-    init(type: TrashType, point: CGPoint) {
+    init(type: CanType) {
         self.type = type
         
         
-        let texture = SKTexture(imageNamed: "trashCan")
+        let texture = SKTexture(imageNamed: "\(type)")
         
         super.init(texture: texture, color: .white, size: texture.size())
-        self.position = point
-        self.size = CGSize(width: 100, height: 100)
-        self.name = "trashCan-\(self.type.rawValue)"
-        self.physicsBody = SKPhysicsBody(circleOfRadius: self.frame.width / 2.0)
+        
+        
+        size.width = size.width / 3.0
+        size.height = size.height / 3.0
+        
+        self.name = "trashCan-\(type)"
+        self.physicsBody = SKPhysicsBody(texture: texture, size: size)
         
         self.physicsBody?.allowsRotation = false
-        self.physicsBody?.restitution = 0
+        self.physicsBody?.restitution = -10
         self.physicsBody?.friction = 0
         self.physicsBody?.affectedByGravity = false
         self.physicsBody?.mass = 1000000
@@ -39,20 +50,23 @@ class TrashCanNode: SKSpriteNode {
 }
 
 
-class ObstacleNode: SKSpriteNode {
+class ConveyorBeltNode: SKSpriteNode {
     
     
     init(point: CGPoint) {
-    
+
+        let texture = SKTexture(imageNamed: "conveyorbelt")
+        let textureSize = texture.size()
         
         
-        let texture = SKTexture(imageNamed: "trashCan")
-        
-        super.init(texture: texture, color: .white, size: texture.size())
+        super.init(texture: texture, color: .white, size: textureSize)
         self.position = point
-        self.size = CGSize(width: 100, height: 100)
-        self.name = "obstacle"
-        self.physicsBody = SKPhysicsBody(circleOfRadius: self.frame.width / 2.0)
+        
+        size.width = size.width / 3.0
+        size.height = size.height / 3.5
+        
+        self.name = "conveyorbelt"
+        self.physicsBody = SKPhysicsBody(texture: texture, size: size)
         
         self.physicsBody?.allowsRotation = false
         self.physicsBody?.restitution = 0

@@ -7,30 +7,33 @@
 
 import Foundation
 
-protocol GUIDelegate {
-    func nextLevel()
+protocol UIDelegate {
+    func nextLevel(level: Int)
     func gameOver()
 }
 
 class GameManager {
     static let shared = GameManager()
     
-    var delegate: GUIDelegate?
+    var uiDelegate: UIDelegate?
+    var guiDelegate: GUIDelegate?
+    
     
 //    @Binding var isShowGameOver: Bool
     
     private init() { }
     
-    private var currentLevel: Int = 1
+    var currentLevel: Int = 1
     var nowPlaying: Bool = false
     private var trashCount: Int = 0
-    var heart: Int = 3
     var score: Int = 0
+    
+    var isFever: Bool = false
     
     
     
     var interval: Double  {
-        return 2 - Double(currentLevel) * 0.2
+        return 0.5
     }
 
     var howManyKind: Int {
@@ -38,19 +41,17 @@ class GameManager {
     }
     
     var numOfTrash: Int {
-        return 20 + currentLevel * 3
+        if isFever {
+            return 5
+        } else {
+            return 2
+        }
     }
     
     func correctTrash() {
         score += 100
     }
     
-    func incorrectTrash() {
-        self.heart -= 1
-        if heart < 0 {
-            self.endGame()
-        }
-    }
     
     func startGame() {
         print("DEBUG: GameManger starts game...")
@@ -59,25 +60,54 @@ class GameManager {
     }
     
     func increaseTrashCount() {
-        if trashCount >= numOfTrash {
-            endGame()
+        if trashCount == numOfTrash {
+            
+            if !isFever {
+                isFever = true
+                trashCount = 0
+                return
+            }
+            
+            
+            print("DEBUG: increaseTrashCount...")
+            if nowPlaying {
+                self.nowPlaying = false
+                
+                print("DEBUG: endGame called...")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    self.endGame()
+                }
+            }
         } else {
             trashCount = trashCount + 1
+            print("DEBUG: trash count increased")
         }
     }
     
     
     func endGame() {
         print("DEBUG: GameManger ends game...")
-        
         self.nowPlaying = false
         refreash()
-        delegate?.gameOver()
+        
+        if currentLevel == 1 {
+            currentLevel = 2
+            uiDelegate?.nextLevel(level: 2)
+        } else if currentLevel == 2{
+            uiDelegate?.gameOver()
+            self.resetGame()
+        }
+    }
+    
+    func resetGame() {
+        currentLevel = 1
+        score = 0
+        guiDelegate?.resetGUI()
+        self.refreash()
     }
     
     func refreash() {
         trashCount = 0
-        heart = 3
-        score = 0
+        self.isFever = false
     }
 }

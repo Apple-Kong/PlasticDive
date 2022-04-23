@@ -25,8 +25,64 @@ enum TrashType: Int, CaseIterable {
     case PS
     case OTHER
     
+    var name: String {
+        switch self {
+        case .PETE:
+            return "PETE"
+        case .HDPE:
+            return "HDPE"
+        case .PVC:
+            return "PVC"
+        case .LDPE:
+            return "LDPE"
+        case .PP:
+            return "PP"
+        case .PS:
+            return "PS"
+        case .OTHER:
+            return "OTHER"
+        }
+    }
+    
     var imageName: String {
         "trash-\(self.rawValue)"
+    }
+    
+    var isRecycle: Bool {
+        switch self {
+        case .PETE, .HDPE, .PP:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    var isMicrowave: Bool {
+        switch self {
+        case .HDPE, .PP:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .PETE:
+            return "PET 1 plastic is used in much disposable food and drink containers so we interfere with it quite often. Therefore it is crucial to understand a few things: PET plastic is rather safe for food and drinks packaging. You can only use PETE plastic one time. It has got a porous structure so you need strong cleaning products. These products will cause carcinogens leach. Never heat PETE 1 plastic as this causes antimony leach which is a toxic chemical."
+        case .HDPE:
+            return "HDPE"
+        case .PVC:
+            return "PVC"
+        case .LDPE:
+            return "LDPE"
+        case .PP:
+            return "PP"
+        case .PS:
+            return "PS"
+        case .OTHER:
+            return "OTHER"
+        }
     }
 }
 
@@ -50,16 +106,17 @@ class TrashNode: SKSpriteNode {
         
         super.init(texture: texture, color: .white, size: textureSize)
         
-        size.width = size.width / 2.0
-        size.height = size.height / 2.0
+        size.width = size.width / 2.5
+        size.height = size.height / 2.5
         
         name = "trash-\(type.rawValue)"
         
         
-        physicsBody = SKPhysicsBody(texture: texture, size: size)
-        physicsBody?.allowsRotation = true
-        physicsBody?.restitution = 0.5
-        physicsBody?.friction = 0.1
+        physicsBody = SKPhysicsBody(rectangleOf: size)
+        physicsBody?.allowsRotation = false
+        physicsBody?.restitution = 0.2
+        physicsBody?.friction = 0
+        physicsBody?.mass = 0.2
 
         physicsBody?.categoryBitMask = CollisionType.trash.rawValue
         physicsBody?.collisionBitMask = CollisionType.trash.rawValue | CollisionType.trashCan.rawValue | CollisionType.obstacle.rawValue

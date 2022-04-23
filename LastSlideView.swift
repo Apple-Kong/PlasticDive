@@ -29,38 +29,9 @@ struct LastSlideView: View {
             
                 .multilineTextAlignment(.center)
                 .padding(.top, 20)
-                
-            
-            Spacer()
-            
- 
-        }
-    }
-}
-
-
-struct FirstSlideView: View {
-    var body: some View {
-        VStack {
-            Text("Welcome")
-                .font(.largeTitle)
-                .lineLimit(1)
-                .padding(.top, 20)
-            
-            
-            RoundedRectangle(cornerRadius: 20)
-                .frame(width: 340, height: 200)
-                
-            
-            Text("Plastics are comming!")
-                .multilineTextAlignment(.center)
-                .padding(.top, 20)
-            
-            //게임 방법에 대한 설명 쓸 것!
-                
-            
-            Spacer()
         
+            Spacer()
         }
     }
 }
+

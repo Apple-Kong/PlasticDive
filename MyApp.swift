@@ -2,26 +2,13 @@ import SwiftUI
 
 @main
 struct MyApp: App {
-    
     @State private var isOver = false
-//    @StateObject private var gameStateManager = GameStateManager()
+    @State private var goingToNextLevel = false
     
     var body: some Scene {
         WindowGroup {
-            ContentView(isOver: $isOver)
-//                .environmentObject(gameStateManager)
+            ContentView(isOver: $isOver, isGoing: $goingToNextLevel)
+
         }
     }
-}
-
-class GameStateManager: ObservableObject {
-    @Published var state: GameState = GameState.home
-}
-
-enum GameState {
-    case home
-    case playing
-    case pause
-    case over
-    case moveToNextLevel
 }
