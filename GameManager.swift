@@ -44,9 +44,9 @@ class GameManager {
     
     var numOfTrash: Int {
         if isFever {
-            return 5
+            return 12
         } else {
-            return 2
+            return 20
         }
     }
     

@@ -44,14 +44,12 @@ struct ContentView: View, UIDelegate {
             
             if isStartViewShown {
                 TabView {
-    //                FirstSlideView()
-                    
-//                    MoreInfoView()
                     
                     FirstSlideView()
                         .foregroundColor(.black)
                     
                     TrashDescriptionView()
+//                    SecondDescriptionView()
                     
                     GameStartButtonView(isShown: $isStartViewShown)
 
@@ -69,14 +67,14 @@ struct ContentView: View, UIDelegate {
             
             if isGoingToNextLevel {
                 TabView {
-
-                    CongratView()
+                    
+                    CongratView(level: 1)
                         .foregroundColor(.black)
                     
                     SecondDescriptionView()
                     
                     GameStartButtonView(isShown: $isGoingToNextLevel)
-
+                    
                 }
                 .tabViewStyle(.page)
                 .background(.white)
@@ -86,17 +84,33 @@ struct ContentView: View, UIDelegate {
                 .zIndex(2)
                 .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 0)
             }
-            
 
             
             if isOver {
-                
                 TabView {
                     
-                    ForEach(messages) { item in
-                        LastTextView(text: item.text)
-                            .padding(20)
-                    }
+                    CongratView(level: 2)
+                        .foregroundColor(.black)
+                        
+//                    
+//                    ForEach(messages) { item in
+//                        LastTextView(text: item.text)
+//                            .padding(20)
+//                    }
+//                    
+                    LastTextView(text: messages[0].text)
+                        .padding(20)
+                    
+                    LastTextView(text: messages[1].text)
+                        .padding(20)
+                    
+                    LastTextView(text: messages[2].text)
+                        .padding(20)
+                    
+                    LastTextView(text: messages[3].text)
+                        .padding(20)
+                    
+               
 
                     LastSlideView()
                         .foregroundColor(.black)
@@ -108,8 +122,6 @@ struct ContentView: View, UIDelegate {
                     
                     GameOverView(isOver: $isOver)
                             .zIndex(2)
-                        
-
                 }
                 .tabViewStyle(.page)
                 .background(.white)
@@ -119,7 +131,6 @@ struct ContentView: View, UIDelegate {
                 .zIndex(2)
                 .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 0)
                 .transition(.scale)
-               
             }
         }
         .ignoresSafeArea()
@@ -137,7 +148,6 @@ struct ContentView: View, UIDelegate {
     
     func gameOver() {
         withAnimation {
-//            self.gameStateManager.state = .over
             self.isOver = true
         }
         print("DEBUG: gameOver delegates \(isOver)")
@@ -194,8 +204,7 @@ let messages: [Message] = [
     Message(id: 0, text: "Did you enjoy the game?"),
     Message(id: 1, text: "You have now learned which plastics are well recycled. So you can make more environmentally friendly choices when you buy plastic products."),
     Message(id: 2, text: "In addition, you know which plastic you shouldn't put in the microwave. So now, You're able to protect your health"),
-    Message(id: 3, text: "The numbers on these cute friends' bodies are actually..."),
-    Message(id: 4, text: "Indicates the ISO specification plastic type.")
+    Message(id: 3, text: "The numbers on these cute friends' bodies are actually indicates the ISO specification plastic type.")
 ]
 
 
@@ -243,7 +252,6 @@ struct GameOverView: View {
                     }
                     gameManager.resetGame()
                     gameManager.startGame()
-
                     
                 } label: {
                     ZStack {
@@ -259,15 +267,10 @@ struct GameOverView: View {
                     .cornerRadius(10)
                 }
                 .padding(20)
-                
-
             }
         }
         .frame(width: 400, height: 300)
         .background(.white)
         .cornerRadius(20)
-        
-        
-        
     }
 }

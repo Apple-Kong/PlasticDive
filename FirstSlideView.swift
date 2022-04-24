@@ -24,8 +24,6 @@ struct FirstSlideView: View {
                 .multilineTextAlignment(.center)
                 .padding(.bottom, 20)
             
-            //게임 방법에 대한 설명 쓸 것!
-                
             
             Spacer()
         

@@ -8,39 +8,70 @@
 import SwiftUI
 
 
+let infos: [SlideInfo] = [
+    SlideInfo(title: "Recycle", images: ["trash-1", "trash-2"], description: "Type 1 and Type 2 are easy to recycle. In addtion, Type 5 is expensive to recycle, but it also can be recycled"),
+    SlideInfo(title: "Microwave", images: ["trash-2", "trash-5"], description: "Type 2 and Type 5 are very safe to microwave. Type 1 and 4 are highly heat resistant, so it is okay to microwave them, but you should be careful because they can be toxic."),
+    
+]
+
+
 struct CongratView: View {
     
-    var slideInfo: SlideInfo = SlideInfo(title: "Recycle", images: ["trash-1", "trash-2", "trash-5"], description: "types one and two are used in products like water bottles peanut butter jars shampoo bottles, gallon jugs and alot of other things that are parts of our everyday lives")
+    let bluebinAddition: [String] = ["trash-5"]
+    let microwaveAddition = ["trash-1", "trash-4"]
+    
+    var level: Int = 1
+    
+    init(level: Int) {
+        self.level = level
+    }
+    
     
     var body: some View {
         VStack {
             Text("Great Job!")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .padding(.top, 30)
+                .padding(.top, 20)
                 
             
             
             HStack(spacing: 20) {
                 
-                ForEach(0..<slideInfo.images.count) { index in
-                    Image(slideInfo.images[index])
+                ForEach(0..<infos[level - 1].images.count) { index in
+                    Image(infos[level - 1].images[index])
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 100, height: 100)
                         .cornerRadius(10)
                         .shadow(color: .black.opacity(0.4), radius: 10)
-                        
                 }
             }
             
             Spacer()
-                .frame(height: 60)
+                .frame(height: 50)
             
-            Text(slideInfo.description)
-                
-            Spacer()
-                
+            Text(infos[level - 1].description)
+            
+            
+            if level == 1 {
+                Image(bluebinAddition[0])
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 80, height: 80)
+                    .shadow(color: .black.opacity(0.4), radius: 10)
+    
+            } else {
+                HStack(spacing: 20) {
+                    ForEach(0..<2) { index in
+                        Image(microwaveAddition[index])
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 80, height: 80)
+                            .shadow(color: .black.opacity(0.4), radius: 10)
+                    }
+                }
+            }
         }
         .padding(.horizontal, 30)
     }
@@ -49,7 +80,6 @@ struct CongratView: View {
 
 struct TrashDescriptionView: View {
     
-    var slideInfo: SlideInfo = SlideInfo(title: "Recycle", images: ["trash-1", "trash-2", "trash-5"], description: "types one and two are used in products like water bottles peanut butter jars shampoo bottles, gallon jugs and alot of other things that are parts of our everyday lives")
     
     var body: some View {
         
@@ -62,8 +92,8 @@ struct TrashDescriptionView: View {
                    
 
                 HStack(spacing: 20) {
-                    ForEach(0..<slideInfo.images.count) { index in
-                        Image(slideInfo.images[index])
+                    ForEach(0..<2) { index in
+                        Image(infos[0].images[index])
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 80, height: 80)
@@ -94,35 +124,27 @@ struct TrashDescriptionView: View {
 
 struct SecondDescriptionView: View {
     
-    var slideInfo: SlideInfo = SlideInfo(title: "Recycle", images: ["trash-1", "trash-2","trash-4", "trash-5"], description: "types one and two are used in products like water bottles peanut butter jars shampoo bottles, gallon jugs and alot of other things that are parts of our everyday lives")
     
     var body: some View {
         
         VStack {
             
-            VStack(alignment: .leading) {
-                HStack {
-                    Text("Next Stage...")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding(.top, 40)
-//                    Spacer()
-                }
+
+            Text("Next Stage...")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .padding(.top, 40)
+
             
-                
-                HStack(spacing: 10) {
-                    
-                    ForEach(0..<slideInfo.images.count) { index in
-                        Image(slideInfo.images[index])
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 80, height: 80)
-                            .cornerRadius(10)
-                            .shadow(color: .black.opacity(0.4), radius: 10)
-                        
-                    }
-                  
-                    
+            
+            
+            HStack(spacing: 20) {
+                ForEach(0..<2) { index in
+                    Image(infos[1].images[index])
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 80, height: 80)
+                        .shadow(color: .black.opacity(0.4), radius: 10)
                 }
             }
             
