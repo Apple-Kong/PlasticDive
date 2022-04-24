@@ -92,12 +92,12 @@ struct ContentView: View, UIDelegate {
                     CongratView(level: 2)
                         .foregroundColor(.black)
                         
-//                    
+//
 //                    ForEach(messages) { item in
 //                        LastTextView(text: item.text)
 //                            .padding(20)
 //                    }
-//                    
+//
                     LastTextView(text: messages[0].text)
                         .padding(20)
                     

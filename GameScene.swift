@@ -34,7 +34,7 @@ class GameScene: SKScene, GUIDelegate { //An object that organizes all of the ac
         didSet {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
-            let formattedScore = formatter.string(from: gameManager.score as NSNumber) ?? "0"
+            let formattedScore = formatter.string(from: gameManager.score + 100 as NSNumber) ?? "0"
             scoreLabel.text = "SCORE: \(formattedScore)"
         }
     }
@@ -63,7 +63,7 @@ class GameScene: SKScene, GUIDelegate { //An object that organizes all of the ac
     //MARK: - LifeCycle
    
     func resetGUI() {
-        print("DEBUG: reset GUI called")
+     
         gameManager.score = 0
         score = 0
     }
