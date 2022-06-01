@@ -21,6 +21,12 @@ struct FirstSlideView: View {
                 
             
             Text("Plastics are falling!!")
+                .font(.title3)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, 10)
+            
+            Text("Slide to Continue")
+                .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
                 .padding(.bottom, 20)
             

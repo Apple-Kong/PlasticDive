@@ -33,6 +33,8 @@ struct ContentView: View, UIDelegate {
 
         return scene
     }
+    
+    
 
     var body: some View {
         //스프라이트 뷰를 뷰 계층 구조에 추가~!
@@ -97,7 +99,8 @@ struct ContentView: View, UIDelegate {
 //                        LastTextView(text: item.text)
 //                            .padding(20)
 //                    }
-//
+                    
+                    
                     LastTextView(text: messages[0].text)
                         .padding(20)
                     

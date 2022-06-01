@@ -38,7 +38,7 @@ struct CongratView: View {
             
             HStack(spacing: 20) {
                 
-                ForEach(0..<infos[level - 1].images.count) { index in
+                ForEach(0..<2) { index in
                     Image(infos[level - 1].images[index])
                         .resizable()
                         .aspectRatio(contentMode: .fit)
